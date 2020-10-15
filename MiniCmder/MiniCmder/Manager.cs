@@ -23,6 +23,7 @@ namespace MiniCmder
             CurrentPath = String.Join("\\", PathToString(rootPathSplitted));
             this.userProfilePath = CurrentPath;
             this.Functions.Add("./", new Action(ToUp));
+            this.Functions.Add("dir", new Func<string[], int>(str => GetContaining(str)));
         }
         public string PathToString(string[] pathSplitted)
         {
@@ -38,16 +39,61 @@ namespace MiniCmder
         }
         private void ToUp()
         {
-            if (CurrentPath != CurrentDrive)
+            if (CurrentPath != CurrentDrive+"\\")
             {
-                string pathWoLast = PathToString(StringToPath(CurrentPath).Where((i,j) => 
+                /*string pathWoLast = PathToString(StringToPath(CurrentPath).Where((i,j) => 
                 j!= StringToPath(CurrentPath).Length-1).ToArray());
-                CurrentPath = pathWoLast;
+                CurrentPath = pathWoLast;*/
+                CurrentPath = Directory.GetParent(CurrentPath).FullName;
             }
             else
             {
                 Console.WriteLine("Нельзя подняться выше.");
             }
+        }
+        private int GetContaining(string[] parameters)
+        {
+            try
+            {
+                string path, mode;
+                path = parameters[0];
+                if (!CheckIfExists(path))
+                {
+                    throw new Exception("put' pizdec");
+                }
+                mode = parameters[1];
+                if (parameters.Length != 2 && parameters.Length != 1)
+                {
+                    throw new Exception("dline pizdec");
+                }
+                string[] files = Directory.GetFiles(path).Select(i => i.Replace(path, "")).ToArray();
+                string[] directories = Directory.GetDirectories(path).Select(i => i.Replace(path, "")).ToArray();
+
+                switch (mode)
+                {
+                    case "-a":
+                        Console.WriteLine(String.Join("\n", directories.Concat(files).ToArray()));
+                        return 0;
+                    case "-f":
+                        Console.WriteLine(String.Join("\n", files));
+                        return 0;
+                    case "-d":
+                        Console.WriteLine(String.Join("\n", directories));
+                        return 0;
+                    case "--help":
+                        //Dopisat
+                        Console.WriteLine("help dir");
+                        return 0;
+                    default:
+                        Console.WriteLine("no such an option");
+                        return 1;
+                }
+            }
+            catch
+            {
+                return 1;
+            }
+            
         }
         private bool CheckIfExists(string path)
         {
@@ -63,8 +109,9 @@ namespace MiniCmder
             {
                 return path.Split("\\");
             }
-            catch (Exception ex)
+            catch
             {
+
                 return (new string[] { });
             }
         }
