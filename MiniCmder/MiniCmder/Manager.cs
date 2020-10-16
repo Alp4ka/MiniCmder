@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection.Metadata.Ecma335;
 
 namespace MiniCmder
 {
@@ -8,8 +10,13 @@ namespace MiniCmder
     {
         private string currentDrive;
         private string userProfilePath, currentPath;
+        private object buffer;
         public Manager()
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Macrohard Шиндовс [Версия 228.1337]");
+            Console.WriteLine("(c) Корпорация шизов(ШУЕ ППШ), 2020. Все права под надежной охраной санитаров.\n");
+            Console.ForegroundColor = ConsoleColor.White;
             string[] rootPathSplitted = this.StringToPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             CurrentDrive = rootPathSplitted[0];
             CurrentPath = String.Join("\\", PathToString(rootPathSplitted));
@@ -79,6 +86,15 @@ namespace MiniCmder
                         break;
                     case "rfile":
                         DeleteFile(parameters);
+                        break;
+                    case "newfile":
+                        break;
+                    case "sc":
+                        ShowContaining(parameters);
+                        break;
+                    case "copy":
+                        break;
+                    case "paste":
                         break;
                     default:
                         throw new Exception("Не существует такой команды. \n--help для справки");
@@ -199,6 +215,7 @@ namespace MiniCmder
             Console.WriteLine("\t'cd <ПУТЬ>'\n\tПерейти в <ПУТЬ>. Смотреть cd --help для просмтра справки.\n");
             Console.WriteLine("\t'mdkir <ИМЯ_НОВОГО_КАТАЛОГА>'\n\tСоздать каталог <ИМЯ_НОВОГО_КАТАЛОГА>. Смотреть mkdir --help для просмтра справки.\n");
             Console.WriteLine("\t'rfile <ПУТЬ_К_ФАЙЛУ>'\n\tУдалить файл в <ПУТЬ_К_ФАЙЛУ>. Смотреть rfile --help для просмтра справки.\n");
+            Console.WriteLine("\t'sc <ПУТЬ>'\n\tsc <ПУТЬ> - Открыть файл в <ПУТЬ>. Смотреть sc --help для просмтра справки.\n");
         }
         public void ChangeDirectory(string[] parameters)
         {
@@ -207,6 +224,10 @@ namespace MiniCmder
                 if (parameters.Length == 1)
                 {
                     parameters[0] = parameters[0].Replace("/", "\\");
+                }
+                else
+                {
+                    throw new Exception("Неверное число аргументов.");
                 }
                 switch (parameters[0])
                 {
@@ -301,6 +322,41 @@ namespace MiniCmder
         {
             return Environment.GetLogicalDrives().Select(i => i.Replace("\\", "")).ToArray();
         }
+        public void ShowContaining(string[] parameters)
+        {
+            try
+            {
+                if (parameters.Length == 1)
+                {
+                    switch (parameters[0])
+                    {
+                        case "--help":
+                            Console.WriteLine("\t'sc:' \n\t'sc <ПУТЬ>' - Открыть файл в <ПУТЬ>.");
+                            break;
+                        default:
+                            string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                            if (File.Exists(path))
+                            {
+                                Editor.ShowContent(path, true);
+                            }
+                            else
+                            {
+                                throw new Exception($"Файла {path} не существует.");
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    throw new Exception("Неверное число аргументов.\nsc --help для справки.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message + "\nsc --help для справки.");
+            }
+        }
         //nuzhna zashita ot duraka
         public void DeleteFile(string[] parameters)
         {
@@ -364,6 +420,10 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message);
             }
         }
+        public void CreateFile()
+        {
+
+        }
         public string CurrentDrive
         {
             get
@@ -413,6 +473,17 @@ namespace MiniCmder
             get
             {
                 return this.userProfilePath;
+            }
+        }
+        public object Buffer
+        {
+            get
+            {
+                return buffer;
+            }
+            set
+            {
+                buffer = value;
             }
         }
     }

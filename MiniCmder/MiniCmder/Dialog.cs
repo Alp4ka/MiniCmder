@@ -13,9 +13,9 @@ namespace MiniCmder
             char choice = '\0';
             while(true){
                 choice = Console.ReadKey().KeyChar.ToString().ToLower()[0];
-                Console.SetCursorPosition(Console.CursorTop, Console.CursorLeft - 1);
-                Console.Write(" ");
-                Console.SetCursorPosition(Console.CursorTop, Console.CursorLeft - 1);
+                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                Console.Write("   ");
+                Console.SetCursorPosition(0, Console.CursorTop);
                 if (choice == keyYes)
                 {
                     return true;
@@ -27,5 +27,23 @@ namespace MiniCmder
             }
             return true;
         }
+        public static bool WhileNot(string question, char keyToPress='y')
+        {
+            Console.WriteLine(question);
+            char choice = '\0';
+            while (true)
+            {
+                choice = Console.ReadKey().KeyChar.ToString().ToLower()[0];
+                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                Console.Write("   ");
+                Console.SetCursorPosition(0, Console.CursorTop);
+                if (choice == keyToPress)
+                {
+                    return true;
+                }
+            }
+            return true;
+        }
     }
+    
 }
