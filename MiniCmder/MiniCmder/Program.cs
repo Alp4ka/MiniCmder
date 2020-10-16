@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace MiniCmder
 {
@@ -7,8 +8,17 @@ namespace MiniCmder
         static void Main(string[] args)
         {
             Manager manager = new Manager();
-            Console.WriteLine(manager);
-            
+            Console.ForegroundColor = ConsoleColor.White;
+            while (true)
+            {
+                Console.WriteLine();
+                Console.Write($"{manager.CurrentPath} >>> ");
+                string line = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                manager.SetCommand(line);
+                Console.ForegroundColor = ConsoleColor.White;
+                
+            }
         }
     }
 }

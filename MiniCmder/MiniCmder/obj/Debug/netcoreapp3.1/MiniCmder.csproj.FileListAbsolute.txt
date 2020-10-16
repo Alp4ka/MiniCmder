@@ -11,3 +11,16 @@ C:\Users\kisam\Desktop\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\Min
 C:\Users\kisam\Desktop\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.dll
 C:\Users\kisam\Desktop\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.pdb
 C:\Users\kisam\Desktop\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.genruntimeconfig.cache
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\bin\Debug\netcoreapp3.1\MiniCmder.exe
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\bin\Debug\netcoreapp3.1\MiniCmder.deps.json
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\bin\Debug\netcoreapp3.1\MiniCmder.runtimeconfig.json
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\bin\Debug\netcoreapp3.1\MiniCmder.runtimeconfig.dev.json
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\bin\Debug\netcoreapp3.1\MiniCmder.dll
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\bin\Debug\netcoreapp3.1\MiniCmder.pdb
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.csprojAssemblyReference.cache
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.AssemblyInfoInputs.cache
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.AssemblyInfo.cs
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.csproj.CoreCompileInputs.cache
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.dll
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.pdb
+C:\Users\kisam\OneDrive\Рабочий стол\MiniCmder\MiniCmder\MiniCmder\obj\Debug\netcoreapp3.1\MiniCmder.genruntimeconfig.cache
