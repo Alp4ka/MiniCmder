@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 
 namespace MiniCmder
 {
@@ -9,9 +11,10 @@ namespace MiniCmder
     {
         private string currentDrive;
         private string userProfilePath, currentPath;
-        private object buffer;
+        public Concatenator Concat;
         public Manager()
         {
+            Concat = new Concatenator();
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Macrohard Шиндовс [Версия 228.1337]");
             Console.WriteLine("(c) Корпорация шизов(ШУЕ ППШ), 2020. Все права под надежной охраной санитаров.\n");
@@ -75,7 +78,7 @@ namespace MiniCmder
                     case "cdrive":
                         ChangeDrive(parameters);
                         break;
-                    case "--help":
+                    case "help":
                         Help();
                         break;
                     case "cd":
@@ -94,17 +97,79 @@ namespace MiniCmder
                         ShowFile(parameters);
                         break;
                     case "copy":
+                        Copy(parameters);
                         break;
                     case "paste":
+                        Paste(parameters);
+                        break;
+                    case "move":
+                        break;
+                    case "concat":
+                        Concatenate(parameters);
                         break;
                     default:
-                        throw new Exception("Не существует такой команды. \n--help для справки");
+                        throw new Exception("Не существует такой команды. \nhelp для справки");
                 }
             }
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
+            }
+        }
+        public void Concatenate(string[] parameters)
+        {
+            try
+            {
+                if(parameters.Length == 1)
+                {
+                    switch (parameters[0])
+                    {
+                        case "--help":
+                            Console.WriteLine("\t'concat': \n\t'concat add <ПУТЬ>.txt' - Складывает текстовую информацию из файла <ПУТЬ>.txt к предыдущим значениям concat \n\t'concat show' - Выводит текущее значение concat. \n\t'concat clear' - Очищает concat.");
+                            break;
+                        case "clear":
+                            Concat.SetNull();
+                            break;
+                        case "show":
+                            Console.WriteLine(Concat.ToString());
+                            break;
+                        default:
+                            throw new Exception("Неизвестный аргумент для concat.");
+                    }
+                }
+                else if(parameters.Length == 2)
+                {
+                    switch (parameters[0])
+                    {
+                        case "add":
+                            string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[1]));
+                            if (File.Exists(path))
+                            {
+                                if (path[(path.Length - 4)..].ToString().ToLower() != ".txt")
+                                {
+                                    throw new Exception("Укажите расширение .txt после имени файла.");
+                                }
+                                Concat.Concat(String.Join("\n", File.ReadAllLines(path))+"\n");
+                            }
+                            else
+                            {
+                                throw new Exception($"Файл {path} не существует.");
+                            }
+                            break;
+                        default:
+                            throw new Exception("Неизвестный аргумент для concat.");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Неверное количество аргументов.");
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message + "\nconcat --help для справки. ");
             }
         }
         public void CreateDirectory(string[] parameters)
@@ -138,6 +203,123 @@ namespace MiniCmder
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(ex.Message);
                 }
+            }
+        }
+        public void Copy(string[] parameters)
+        {
+            try
+            {
+                if(parameters.Length == 1)
+                {
+                    switch (parameters[0])
+                    {
+                        case "--help":
+                            Console.WriteLine("\t'copy': \n\t'copy <ПУТЬ>.txt' - Копирует файл <ПУТЬ>.txt в буфер.");
+                            break;
+                        default:
+                            string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                            if (!File.Exists(path))
+                            {
+                                throw new Exception($"Файла {path} не существует.");
+                            }
+                            TxtFile.Name = StringToPath(path)[StringToPath(path).Length - 1];
+                            TxtFile.Content = String.Join("\n", File.ReadAllLines(path));
+                            Console.WriteLine(TxtFile.Name);
+                            Console.WriteLine(TxtFile.Content);
+                            break;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message + "\ncopy --help для справки. ");
+            }
+        }
+        public void Paste(string[] parameters)
+        {
+            try
+            {
+                if(parameters.Length == 0)
+                {
+                    string path = Path.GetFullPath(CurrentPath);
+                    if (File.Exists(path))
+                    {
+                        throw new Exception($"Это не директория.");
+                    }
+                    if (Directory.Exists(path))
+                    {
+                        if (TxtFile.Name == null || TxtFile.Content == null)
+                        {
+                            throw new Exception("Не скопировали ничего");
+                        }
+                        TxtFile.Name = TxtFile.GenerateName(path);
+                        string fullPath = Path.Combine(path, TxtFile.Name);
+                        File.Create(fullPath).Close();
+                        File.WriteAllText(fullPath, TxtFile.Content);
+                        if (File.Exists(fullPath))
+                        {
+                            Console.WriteLine($"Файл {fullPath} создан.");
+                        }
+                        else
+                        {
+                            throw new Exception($"Файл {fullPath} не удалось создать.");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"Директории нет");
+                    }
+                }
+                else if (parameters.Length == 1)
+                {
+                    switch (parameters[0])
+                    {
+                        case "--help":
+                            Console.WriteLine("\t'paste': \n\t'paste <ПУТЬ>' - Вставляет файл из буфера в <ПУТЬ>.");
+                            break;
+                        default:
+                            string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                            if (File.Exists(path))
+                            {
+                                throw new Exception($"Это не директория.");
+                            }
+                            if (Directory.Exists(path))
+                            {
+                                if (TxtFile.Name == null || TxtFile.Content == null)
+                                {
+                                    throw new Exception("Не скопировали ничего");
+                                }
+                                TxtFile.Name = TxtFile.GenerateName(path);
+                                string fullPath = Path.Combine(path, TxtFile.Name);
+                                File.Create(fullPath).Close();
+                                File.WriteAllText(fullPath, TxtFile.Content);
+                                if (File.Exists(fullPath))
+                                {
+                                    Console.WriteLine($"Файл {path} создан.");
+                                }
+                                else
+                                {
+                                    throw new Exception($"Файл {path} не удалось создать.");
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                throw new Exception($"Директории нет");
+                            }
+
+                    }
+                }
+                else
+                {
+                    throw new Exception("Неверное количество аргументов.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message + "\npaste --help для справки. ");
             }
         }
         public int GetContaining(string[] parameters)
@@ -217,6 +399,11 @@ namespace MiniCmder
             Console.WriteLine("\t'mdkir <ИМЯ_НОВОГО_КАТАЛОГА>'\n\tСоздать каталог <ИМЯ_НОВОГО_КАТАЛОГА>. Смотреть mkdir --help для просмтра справки.\n");
             Console.WriteLine("\t'rfile <ПУТЬ_К_ФАЙЛУ>'\n\tУдалить файл в <ПУТЬ_К_ФАЙЛУ>. Смотреть rfile --help для просмтра справки.\n");
             Console.WriteLine("\t'sc <ПУТЬ>'\n\tsc <ПУТЬ> - Открыть файл в <ПУТЬ>. Смотреть sc --help для просмтра справки.\n");
+            Console.WriteLine("\t'newfile <ПУТЬ>.txt'\n\tnewfile <ПУТЬ>.txt - Создать .txt файл в <ПУТЬ>. Смотреть newfile --help для просмтра справки.\n");
+            Console.WriteLine("\t'concat'\n\tСмотреть concat --help для просмтра справки.\n");
+            Console.WriteLine("\t'copy'\n\tcopy <ПУТЬ>.txt - копировать\n\tСмотреть copy --help для просмтра справки.\n");
+            Console.WriteLine("\t'paste'\n\tpaste - вставить\n\tСмотреть paste --help для просмтра справки.\n");
+            Console.WriteLine("\tНет возможности читать файлы и папки с пробельными символами.");
         }
         public void ChangeDirectory(string[] parameters)
         {
@@ -580,17 +767,6 @@ namespace MiniCmder
             get
             {
                 return this.userProfilePath;
-            }
-        }
-        public object Buffer
-        {
-            get
-            {
-                return buffer;
-            }
-            set
-            {
-                buffer = value;
             }
         }
     }
