@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection.Metadata.Ecma335;
+using System.Text;
 
 namespace MiniCmder
 {
@@ -36,24 +35,25 @@ namespace MiniCmder
         }
         public void ToUp()
         {
-            if (CurrentPath != CurrentDrive+"\\")
+            if (CurrentPath != CurrentDrive + "\\")
             {
                 /*string pathWoLast = PathToString(StringToPath(CurrentPath).Where((i,j) => 
                 j!= StringToPath(CurrentPath).Length-1).ToArray());
                 CurrentPath = pathWoLast;*/
-                CurrentPath = Directory.GetParent(CurrentPath).FullName;
+                CurrentPath = Directory.GetParent(Path.GetFullPath(Path.Combine(CurrentPath, "..\\"))).FullName;
             }
             else
             {
                 Console.WriteLine("Нельзя подняться выше.");
             }
         }
-        public void SetCommand(string input) {
+        public void SetCommand(string input)
+        {
             try
             {
                 if (input.Length == 0)
                 {
-                    throw new Exception("Че с длиной");
+                    throw new Exception("");
                 }
                 string[] inputSplitted = input.Split();
                 string command = inputSplitted[0];
@@ -88,9 +88,10 @@ namespace MiniCmder
                         DeleteFile(parameters);
                         break;
                     case "newfile":
+                        CreateFile(parameters);
                         break;
                     case "sc":
-                        ShowContaining(parameters);
+                        ShowFile(parameters);
                         break;
                     case "copy":
                         break;
@@ -106,7 +107,7 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message);
             }
         }
-        public void CreateDirectory(string[] parameters) 
+        public void CreateDirectory(string[] parameters)
         {
             if (parameters.Length == 1)
             {
@@ -129,10 +130,10 @@ namespace MiniCmder
                             }
                             break;
                     }
-                    
-                    
+
+
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(ex.Message);
@@ -199,7 +200,7 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message);
                 return 1;
             }
-            
+
         }
         public void ClearScreen()
         {
@@ -252,7 +253,7 @@ namespace MiniCmder
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Не найден файл." + "\ncd --help для справки.");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message + "\ncd --help для справки.");
@@ -291,12 +292,12 @@ namespace MiniCmder
                         break;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
             }
-            
+
         }
         private bool CheckIfExists(string path)
         {
@@ -322,7 +323,7 @@ namespace MiniCmder
         {
             return Environment.GetLogicalDrives().Select(i => i.Replace("\\", "")).ToArray();
         }
-        public void ShowContaining(string[] parameters)
+        public void ShowFile(string[] parameters)
         {
             try
             {
@@ -331,19 +332,46 @@ namespace MiniCmder
                     switch (parameters[0])
                     {
                         case "--help":
-                            Console.WriteLine("\t'sc:' \n\t'sc <ПУТЬ>' - Открыть файл в <ПУТЬ>.");
+                            Console.WriteLine("\t'sc:' \n\t'sc <ПУТЬ>' - Открыть файл в <ПУТЬ>. \n\t'sc <ПУТЬ>' utf-8 - Открыть с кодировкой utf-8.\n\t'sc <ПУТЬ>' unicode - Открыть с кодировкой unicode.\n\t'sc <ПУТЬ>' ascii - Открыть с кодировкой ASCII.");
                             break;
                         default:
                             string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
                             if (File.Exists(path))
                             {
-                                Editor.ShowContent(path, true);
+                                Editor.ShowContent(path, Encoding.UTF8, true);
                             }
                             else
                             {
                                 throw new Exception($"Файла {path} не существует.");
                             }
                             break;
+                    }
+                }
+                else if (parameters.Length == 2)
+                {
+                    Encoding encoding;
+                    switch (parameters[1])
+                    {
+                        case "utf-8":
+                            encoding = Encoding.UTF8;
+                            break;
+                        case "unicode":
+                            encoding = Encoding.Unicode;
+                            break;
+                        case "ascii":
+                            encoding = Encoding.ASCII;
+                            break;
+                        default:
+                            throw new Exception($"Кодировка {parameters[1]} недоступна.");
+                    }
+                    string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                    if (File.Exists(path))
+                    {
+                        Editor.ShowContent(path, encoding, true);
+                    }
+                    else
+                    {
+                        throw new Exception($"Файла {path} не существует.");
                     }
                 }
                 else
@@ -362,7 +390,7 @@ namespace MiniCmder
         {
             try
             {
-                if(parameters.Length == 1)
+                if (parameters.Length == 1)
                 {
                     switch (parameters[0])
                     {
@@ -397,7 +425,7 @@ namespace MiniCmder
                             }
                             break;
                     }
-                    
+
                 }
                 else
                 {
@@ -420,9 +448,88 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message);
             }
         }
-        public void CreateFile()
+        public void CreateFile(string[] parameters)
         {
-
+            try
+            {
+                if (parameters.Length == 1)
+                {
+                    switch (parameters[0])
+                    {
+                        case "--help":
+                            Console.WriteLine("\t'newfile:' \n\t'newfile <ПУТЬ>.txt' - Создать файл .txt в <ПУТЬ>. \n\t'newfile <ПУТЬ>.txt' utf-8 - Создать файл .txt в <ПУТЬ> с кодировкой utf-8.\n\t'newfile <ПУТЬ>.txt' unicode - Создать файл .txt в <ПУТЬ> с кодировкой unicode.\n\t'newfile <ПУТЬ>.txt' ascii - Создать файл .txt в <ПУТЬ> с кодировкой ascii.");
+                            break;
+                        default:
+                            string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                            if (File.Exists(path))
+                            {
+                                throw new Exception($"Файл {path} уже существует.");
+                            }
+                            if(path[(path.Length-4)..].ToString().ToLower() != ".txt")
+                            {
+                                throw new Exception("Укажите расширение .txt после имени файла.");
+                            }
+                            File.Create(path).Close();
+                            Editor.EditContent(path, Encoding.UTF8);
+                            if (File.Exists(path))
+                            {
+                                Console.WriteLine($"Файл {path} создан.");
+                            }
+                            else
+                            {
+                                throw new Exception($"Файл {path} не удалось создать.");
+                            }
+                            break;
+                    }
+                }
+                else if (parameters.Length == 2)
+                {
+                    Encoding encoding;
+                    switch (parameters[1])
+                    {
+                        case "utf-8":
+                            encoding = Encoding.UTF8;
+                            break;
+                        case "unicode":
+                            encoding = Encoding.Unicode;
+                            break;
+                        case "ascii":
+                            encoding = Encoding.ASCII;
+                            break;
+                        default:
+                            encoding = Encoding.UTF8;
+                            break;
+                    }
+                    string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                    if (File.Exists(path))
+                    {
+                        throw new Exception($"Файл {path} уже существует.");
+                    }
+                    if (path[(path.Length - 4)..].ToString().ToLower() != ".txt")
+                    {
+                        throw new Exception("Укажите расширение .txt после имени файла.");
+                    }
+                    File.Create(path).Close();
+                    Editor.EditContent(path, encoding);
+                    if (File.Exists(path))
+                    {
+                        Console.WriteLine($"Файл {path} создан.");
+                    }
+                    else
+                    {
+                        throw new Exception($"Файл {path} не удалось создать.");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Неверное число аргументов.\nnewfile --help для справки.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message + "\nnewfile --help для справки.");
+            }
         }
         public string CurrentDrive
         {
@@ -452,7 +559,7 @@ namespace MiniCmder
             {
                 if (CheckIfExists(value))
                 {
-                    if(StringToPath(value)[0] != CurrentDrive)
+                    if (StringToPath(value)[0] != CurrentDrive)
                     {
                         throw new Exception("Путь не найден");
                     }
@@ -460,7 +567,7 @@ namespace MiniCmder
                     {
                         this.currentPath = value;
                     }
-                    
+
                 }
                 else
                 {
