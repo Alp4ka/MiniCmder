@@ -77,6 +77,9 @@ namespace MiniCmder
                     case "mkdir":
                         CreateDirectory(parameters);
                         break;
+                    case "rfile":
+                        DeleteFile(parameters);
+                        break;
                     default:
                         throw new Exception("Не существует такой команды. \n--help для справки");
                 }
@@ -203,6 +206,7 @@ namespace MiniCmder
             Console.WriteLine("\t'../' или '..\\'\n\tПерейти на каталог выше.\n");
             Console.WriteLine("\t'cd <ПУТЬ>'\n\tПерейти в <ПУТЬ>. Смотреть cd --help для просмтра справки.\n");
             Console.WriteLine("\t'mdkir <ИМЯ_НОВОГО_КАТАЛОГА>'\n\tСоздать каталог <ИМЯ_НОВОГО_КАТАЛОГА>. Смотреть mkdir --help для просмтра справки.\n");
+            Console.WriteLine("\t'rfile <ПУТЬ_К_ФАЙЛУ>'\n\tУдалить файл в <ПУТЬ_К_ФАЙЛУ>. Смотреть rfile --help для просмтра справки.\n");
         }
         public void ChangeDirectory(string[] parameters)
         {
@@ -297,7 +301,42 @@ namespace MiniCmder
         {
             return Environment.GetLogicalDrives().Select(i => i.Replace("\\", "")).ToArray();
         }
-        
+        //nuzhna zashita ot duraka
+        public void DeleteFile(string[] parameters)
+        {
+            try
+            {
+                if(parameters.Length == 1)
+                {
+                    switch (parameters[0])
+                    {
+                        case "--help":
+                            Console.WriteLine("\t'rfile: \n\t'rfile <ПУТЬ_К_ФАЙЛУ>' - Удалить файл в <ПУТЬ_К_ФАЙЛУ>.");
+                            break;
+                        default:
+                            string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                            //y - n
+                            System.IO.File.Delete(path);
+                            break;
+                    }
+                    
+                }
+                else
+                {
+                    throw new Exception("Неверное количество аргументов.");
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Нет доступа к удалению файла.");
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+            }
+        }
         public string CurrentDrive
         {
             get
