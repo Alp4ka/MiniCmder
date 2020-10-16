@@ -1,12 +1,6 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MiniCmder
 {
@@ -14,16 +8,12 @@ namespace MiniCmder
     {
         private string currentDrive;
         private string userProfilePath, currentPath;
-        //public Dictionary <string, Delegate> Functions;
         public Manager()
         {
-            //Functions = new Dictionary<string, Delegate>();
             string[] rootPathSplitted = this.StringToPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             CurrentDrive = rootPathSplitted[0];
             CurrentPath = String.Join("\\", PathToString(rootPathSplitted));
             this.userProfilePath = CurrentPath;
-            //this.Functions.Add("../", new Action(ToUp));
-            //this.Functions.Add("dir", new Func<string[], int>(parameters => GetContaining(parameters)));
         }
         public string PathToString(string[] pathSplitted)
         {
@@ -52,36 +42,82 @@ namespace MiniCmder
             }
         }
         public void SetCommand(string input) {
-            if(input.Length == 0)
+            try
             {
-                throw new Exception("Че с длиной");
+                if (input.Length == 0)
+                {
+                    throw new Exception("Че с длиной");
+                }
+                string[] inputSplitted = input.Split();
+                string command = inputSplitted[0];
+                string[] parameters = inputSplitted.Where((i, j) => j != 0).ToArray();
+                switch (command)
+                {
+                    case "../":
+                        ToUp();
+                        break;
+                    case "dir":
+                        GetContaining(parameters);
+                        break;
+                    case "..\\":
+                        ToUp();
+                        break;
+                    case "cls":
+                        ClearScreen();
+                        break;
+                    case "cdrive":
+                        ChangeDrive(parameters);
+                        break;
+                    case "--help":
+                        Help();
+                        break;
+                    case "cd":
+                        ChangeDirectory(parameters);
+                        break;
+                    case "mkdir":
+                        CreateDirectory(parameters);
+                        break;
+                    default:
+                        throw new Exception("Не существует такой команды. \n--help для справки");
+                }
             }
-            string[] inputSplitted = input.Split();
-            string command = inputSplitted[0];
-            string[] parameters = inputSplitted.Where((i, j) => j!=0).ToArray();
-            switch (command)
+            catch (Exception ex)
             {
-                case "../":
-                    ToUp();
-                    break;
-                case "dir":
-                    GetContaining(parameters);
-                    break;
-                case "..\\":
-                    ToUp();
-                    break;
-                case "cls":
-                    ClearScreen();
-                    break;
-                case "cdrive":
-                    ChangeDrive(parameters);
-                    break;
-                case "--help":
-                    Help();
-                    break;
-                default:
-                    Console.WriteLine("Не существует такой команды. \n--help для справки");
-                    break;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public void CreateDirectory(string[] parameters) 
+        {
+            if (parameters.Length == 1)
+            {
+                try
+                {
+                    switch (parameters[0])
+                    {
+                        case "--help":
+                            Console.WriteLine("\t'mkdir: \n\t'mkdir <ИМЯ_НОВОГО_КАТАЛОГА>' - Создать каталог <ИМЯ_НОВОГО_КАТАЛОГА>.");
+                            break;
+                        default:
+                            string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+                            else
+                            {
+                                throw new Exception("Директория с таким именем уже существует.");
+                            }
+                            break;
+                    }
+                    
+                    
+                }
+                catch(Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
         public int GetContaining(string[] parameters)
@@ -143,13 +179,12 @@ namespace MiniCmder
                         break;
                     default:
                         throw new Exception("Нет таких аргументов. \ndir --help для справки.");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        return 1;
                 }
                 return 0;
             }
             catch (Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
                 return 1;
             }
@@ -161,13 +196,42 @@ namespace MiniCmder
         }
         public void Help()
         {
-            Console.WriteLine("--help\tСправка по командам.");
-            Console.WriteLine("dir\tПоказать файлы в текущем каталоге. Смотреть dir --help для справки.");
-            Console.WriteLine("cls\tОчистить экран.");
-            Console.WriteLine("cdrive\tСмотерть cdrive --help для просмтра справки");
-            Console.WriteLine("../ или ..\\\tПерейти на каталог выше.");
+            Console.WriteLine("\t'--help'\n\tСправка по командам.\n");
+            Console.WriteLine("\t'dir'\n\tПоказать файлы в текущем каталоге. Смотреть dir --help для справки.\n");
+            Console.WriteLine("\t'cls'\n\tОчистить экран.\n");
+            Console.WriteLine("\t'cdrive'\n\tСмена диска.Смотреть cdrive --help для просмтра справки.\n");
+            Console.WriteLine("\t'../' или '..\\'\n\tПерейти на каталог выше.\n");
+            Console.WriteLine("\t'cd <ПУТЬ>'\n\tПерейти в <ПУТЬ>. Смотреть cd --help для просмтра справки.\n");
+            Console.WriteLine("\t'mdkir <ИМЯ_НОВОГО_КАТАЛОГА>'\n\tСоздать каталог <ИМЯ_НОВОГО_КАТАЛОГА>. Смотреть mkdir --help для просмтра справки.\n");
         }
-        public void ChangeDirectory() {
+        public void ChangeDirectory(string[] parameters)
+        {
+            try
+            {
+                if (parameters.Length == 1)
+                {
+                    parameters[0] = parameters[0].Replace("/", "\\");
+                }
+                switch (parameters[0])
+                {
+                    case "--help":
+                        Console.WriteLine("\t'cd: \n\t'cd <ПУТЬ>' - Перейти в <ПУТЬ>.");
+                        break;
+                    default:
+                        CurrentPath = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                        break;
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Не найден файл." + "\ncd --help для справки.");
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message + "\ncd --help для справки.");
+            }
         }
         public void ChangeDrive(string[] parameters)
         {
@@ -185,7 +249,7 @@ namespace MiniCmder
                 switch (parameter)
                 {
                     case "--help":
-                        Console.WriteLine("\t'cdrive': \n\t'cdrive <ИМЯ_ДИСКА>:' - Изменяет текущий диск и путь на <ИМЯ_ДИСКА>:.");
+                        Console.WriteLine("\t'cdrive': \n\t'cdrive <ИМЯ_ДИСКА>' - Изменяет текущий диск и путь на <ИМЯ_ДИСКА>:.\n\t'cdrive -list' - Выводит список всех дисков на компьютере.");
                         break;
                     case "-list":
                         Console.WriteLine(String.Join("\n", GetComputerDrives()));
@@ -204,6 +268,7 @@ namespace MiniCmder
             }
             catch(Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
             }
             
@@ -284,11 +349,5 @@ namespace MiniCmder
                 return this.userProfilePath;
             }
         }
-        /*public string CurrentFullPath{
-            get
-            {
-                return CurrentDrive + "\\" + CurrentPath;
-            }
-        }*/
     }
 }

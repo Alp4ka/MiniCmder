@@ -11,13 +11,11 @@ namespace MiniCmder
             Console.ForegroundColor = ConsoleColor.White;
             while (true)
             {
-                Console.WriteLine();
-                Console.Write($"{manager.CurrentPath} >>> ");
+                Console.Write($"{manager.CurrentPath}> ");
                 string line = Console.ReadLine();
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
                 manager.SetCommand(line);
                 Console.ForegroundColor = ConsoleColor.White;
-                
             }
         }
     }
