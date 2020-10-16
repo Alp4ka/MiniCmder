@@ -8,17 +8,21 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\kisam\\.nuget\\packages\\": {}
+    "C:\\Users\\kisam\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\kisam\\OneDrive\\Рабочий стол\\MiniCmder\\MiniCmder\\MiniCmder\\MiniCmder.csproj",
+      "projectUniqueName": "C:\\Users\\kisam\\Desktop\\MiniCmder\\MiniCmder\\MiniCmder\\MiniCmder.csproj",
       "projectName": "MiniCmder",
-      "projectPath": "C:\\Users\\kisam\\OneDrive\\Рабочий стол\\MiniCmder\\MiniCmder\\MiniCmder\\MiniCmder.csproj",
+      "projectPath": "C:\\Users\\kisam\\Desktop\\MiniCmder\\MiniCmder\\MiniCmder\\MiniCmder.csproj",
       "packagesPath": "C:\\Users\\kisam\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\kisam\\OneDrive\\Рабочий стол\\MiniCmder\\MiniCmder\\MiniCmder\\obj\\",
+      "outputPath": "C:\\Users\\kisam\\Desktop\\MiniCmder\\MiniCmder\\MiniCmder\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
         "C:\\Users\\kisam\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"

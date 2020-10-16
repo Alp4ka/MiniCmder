@@ -148,14 +148,6 @@ namespace MiniCmder
                 }
                 string[] files = Directory.GetFiles(path).Select(i => i.Replace(path, "")).ToArray();
                 string[] directories = Directory.GetDirectories(path).Select(i => i.Replace(path, "")).ToArray();
-                /*Console.WriteLine(path);
-                path = path.Replace("/", "\\");
-                if (path.StartsWith("..\\") || path.StartsWith(".\\"))
-                {
-                    path = CurrentPath + "\\" + path;
-                }
-                Console.WriteLine(path);
-                Console.WriteLine(path, mode);*/
                 for (int fileIndex = 0; fileIndex < files.Length; ++fileIndex)
                 {
                     FileInfo fileInfo = new FileInfo(path + "\\" + files[fileIndex]);
@@ -222,7 +214,15 @@ namespace MiniCmder
                         Console.WriteLine("\t'cd: \n\t'cd <ПУТЬ>' - Перейти в <ПУТЬ>.");
                         break;
                     default:
-                        CurrentPath = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                        string pathCheck = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                        if (Directory.Exists(pathCheck))
+                        {
+                            CurrentPath = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                        }
+                        else
+                        {
+                            throw new Exception($"{pathCheck} не является директорией.");
+                        }
                         break;
                 }
             }
@@ -315,8 +315,30 @@ namespace MiniCmder
                             break;
                         default:
                             string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
-                            //y - n
-                            System.IO.File.Delete(path);
+                            if (File.Exists(path))
+                            {
+                                if (Dialog.YesNo("Вы точно хотите удалить этот файл?"))
+                                {
+                                    System.IO.File.Delete(path);
+                                    if (!File.Exists(path))
+                                    {
+                                        Console.WriteLine($"Файл {path} успешно удален!");
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Не удалось удалить файл.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Вы отменили удаление файла {path}");
+                                }
+
+                            }
+                            else
+                            {
+                                throw new FileNotFoundException();
+                            }
                             break;
                     }
                     
@@ -325,6 +347,11 @@ namespace MiniCmder
                 {
                     throw new Exception("Неверное количество аргументов.");
                 }
+            }
+            catch (FileNotFoundException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Файл не найден.");
             }
             catch (UnauthorizedAccessException)
             {
