@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading;
+
 //if find regex "/a"
 namespace MiniCmder
 {
@@ -48,6 +47,40 @@ namespace MiniCmder
             else
             {
                 Console.WriteLine("Нельзя подняться выше.");
+            }
+        }
+        public void DrawGraph()
+        {
+            string[] splittedPath = StringToPath(CurrentPath);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            for (int i = 0; i < splittedPath.Length; ++i)
+            {
+                if(i == splittedPath.Length-1)
+                {
+                    string[] dirContain = GetContaining();
+                    Console.Write(new String(new char[i * 2]).Replace("\0", " "));
+                    Console.Write("|_");
+                    Console.WriteLine(splittedPath[i]);
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    for (int j = 0; j < dirContain.Length; ++j)
+                    {
+                        Console.Write(new String(new char[(i+1) * 2]).Replace("\0", " "));
+                        Console.Write("|_");
+                        Console.WriteLine(dirContain[j]);
+                    }
+                }
+                else if (i != 0)
+                {
+                    Console.Write(new String(new char[i * 2]).Replace("\0", " "));
+                    Console.Write("|_");
+                    Console.WriteLine(splittedPath[i]);
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine(" " + splittedPath[i]);
+                    continue;
+                }
             }
         }
         public void SetCommand(string input)
@@ -109,6 +142,7 @@ namespace MiniCmder
                         Concatenate(parameters);
                         break;
                     case "graph":
+                        DrawGraph();
                         break;
                     default:
                         throw new Exception("Не существует такой команды. \nhelp для справки");
@@ -136,7 +170,7 @@ namespace MiniCmder
                     }
                     return;
                 }
-                else if(parameters.Length == 2)
+                else if (parameters.Length == 2)
                 {
                     string pathToFile = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
                     string pathTo = Path.GetFullPath(Path.Combine(CurrentPath, parameters[1]));
@@ -158,7 +192,7 @@ namespace MiniCmder
                     throw new Exception("Неверное количество аргументов.");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message + "\nmove --help для справки.");
@@ -169,7 +203,7 @@ namespace MiniCmder
         {
             try
             {
-                if(parameters.Length == 1)
+                if (parameters.Length == 1)
                 {
                     switch (parameters[0])
                     {
@@ -186,7 +220,7 @@ namespace MiniCmder
                             throw new Exception("Неизвестный аргумент для concat.");
                     }
                 }
-                else if(parameters.Length == 2)
+                else if (parameters.Length == 2)
                 {
                     switch (parameters[0])
                     {
@@ -198,7 +232,7 @@ namespace MiniCmder
                                 {
                                     throw new Exception("Укажите расширение .txt после имени файла.");
                                 }
-                                Concat.Concat(String.Join("\n", File.ReadAllLines(path))+"\n");
+                                Concat.Concat(String.Join("\n", File.ReadAllLines(path)) + "\n");
                             }
                             else
                             {
@@ -214,7 +248,7 @@ namespace MiniCmder
                     throw new Exception("Неверное количество аргументов.");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message + "\nconcat --help для справки. ");
@@ -257,7 +291,7 @@ namespace MiniCmder
         {
             try
             {
-                if(parameters.Length == 1)
+                if (parameters.Length == 1)
                 {
                     switch (parameters[0])
                     {
@@ -278,7 +312,7 @@ namespace MiniCmder
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message + "\ncopy --help для справки. ");
@@ -288,7 +322,7 @@ namespace MiniCmder
         {
             try
             {
-                if(parameters.Length == 0)
+                if (parameters.Length == 0)
                 {
                     string path = Path.GetFullPath(CurrentPath);
                     if (File.Exists(path))
@@ -370,7 +404,7 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message + "\npaste --help для справки. ");
             }
         }
-        public int GetContaining(string[] parameters)
+        public string[] GetContaining(string[] parameters)
         {
             try
             {
@@ -405,32 +439,54 @@ namespace MiniCmder
                     DirectoryInfo fileInfo = new DirectoryInfo(path + "\\" + directories[dirIndex]);
                     directories[dirIndex] = $"{fileInfo.CreationTimeUtc} \t <DIR> \t {fileInfo.Name}";
                 }
+                string[] toReturn;
                 switch (mode)
                 {
                     case "-a":
-                        Console.WriteLine(String.Join("\n", directories.Concat(files).ToArray()));
-                        break;
+                        toReturn = directories.Concat(files).ToArray();
+                        Console.WriteLine(String.Join("\n", toReturn));
+                        return toReturn;
                     case "-f":
+                        toReturn = files;
                         Console.WriteLine(String.Join("\n", files));
-                        break;
+                        return toReturn;
                     case "-d":
+                        toReturn = directories;
                         Console.WriteLine(String.Join("\n", directories));
-                        break;
+                        return toReturn;
                     case "--help":
                         Console.WriteLine("\t'dir': \n\t'dir' - Показывает ВСЕ файлы и подкаталоги в текущем каталоге. \n\t'dir -a' - Показывает ВСЕ файлы и подкаталоги в текущем каталоге. \n\t'dir -f' - Показывает ВСЕ файлы в текущем каталоге. \n\t'dir -d' - Показывает ВСЕ подкаталоги в текущем каталоге.");
-                        break;
+                        return new string[] { };
                     default:
                         throw new Exception("Нет таких аргументов. \ndir --help для справки.");
                 }
-                return 0;
             }
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
-                return 1;
+                return new string[] { };
             }
 
+        }
+        private string[] GetContaining()
+        {
+            try
+            {
+                if (!CheckIfExists(CurrentPath))
+                {
+                    throw new Exception("Указанный путь не существует.");
+                }
+                string[] files = Directory.GetFiles(CurrentPath).Select(i => i.Replace(CurrentPath, "")).ToArray();
+                string[] directories = Directory.GetDirectories(CurrentPath).Select(i => i.Replace(CurrentPath, "")).ToArray();
+                string[] toReturn;
+                toReturn = directories.Concat(files).ToArray();
+                return toReturn;
+            }
+            catch (Exception ex)
+            {
+                return new string[] { };
+            }
         }
         public void ClearScreen()
         {
@@ -451,7 +507,8 @@ namespace MiniCmder
             Console.WriteLine("\t'concat'\n\tСмотреть concat --help для просмтра справки.\n");
             Console.WriteLine("\t'copy'\n\tcopy <ПУТЬ>.txt - копировать\n\tСмотреть copy --help для просмтра справки.\n");
             Console.WriteLine("\t'paste'\n\tpaste - вставить\n\tСмотреть paste --help для просмтра справки.\n");
-            Console.WriteLine("\t'move'\n\tmove <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ>' - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.");
+            Console.WriteLine("\t'move'\n\tmove <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ> - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.");
+            Console.WriteLine("\t'graph'\n\tgraph - Вывести дерево пути.");
             Console.WriteLine("\tНет возможности читать файлы и папки с пробельными символами.");
         }
         public void ChangeDirectory(string[] parameters)
@@ -701,7 +758,7 @@ namespace MiniCmder
                             {
                                 throw new Exception($"Файл {path} уже существует.");
                             }
-                            if(path[(path.Length-4)..].ToString().ToLower() != ".txt")
+                            if (path[(path.Length - 4)..].ToString().ToLower() != ".txt")
                             {
                                 throw new Exception("Укажите расширение .txt после имени файла.");
                             }
