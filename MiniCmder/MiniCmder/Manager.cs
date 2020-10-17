@@ -184,7 +184,8 @@ namespace MiniCmder
                     switch (parameters[0])
                     {
                         case "--help":
-                            Console.WriteLine("\t'move': \n\t'move <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ>' - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.");
+                            Console.WriteLine("\t'move': \n\t'move <ПУТЬ_К_ФАЙЛУ>.txt " +
+                                "<ПУТЬ_КУДА_КОПИРОВАТЬ>' - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.");
                             break;
                         default:
                             break;
@@ -233,7 +234,11 @@ namespace MiniCmder
                     switch (parameters[0])
                     {
                         case "--help":
-                            Console.WriteLine("\t'concat': \n\t'concat add <ПУТЬ>.txt' - Складывает текстовую информацию из файла <ПУТЬ>.txt к предыдущим значениям concat \n\t'concat show' - Выводит текущее значение concat. \n\t'concat clear' - Очищает concat. \n\t'concat save' - Сохраняет в текущем пути файл с результатом concat.");
+                            Console.WriteLine("\t'concat': \n\t'" +
+                                "concat add <ПУТЬ>.txt' - Складывает текстовую информацию из файла <ПУТЬ>.txt к предыдущим значениям concat \n\t'" +
+                                "concat show' - Выводит текущее значение concat. \n\t'" +
+                                "concat clear' - Очищает concat. \n\t'" +
+                                "concat save' - Сохраняет в текущем пути файл с результатом concat.");
                             break;
                         case "clear":
                             Concat.SetNull();
@@ -513,7 +518,11 @@ namespace MiniCmder
                         Console.WriteLine(String.Join("\n", directories));
                         return toReturn;
                     case "--help":
-                        Console.WriteLine("\t'dir': \n\t'dir' - Показывает ВСЕ файлы и подкаталоги в текущем каталоге. \n\t'dir -a' - Показывает ВСЕ файлы и подкаталоги в текущем каталоге. \n\t'dir -f' - Показывает ВСЕ файлы в текущем каталоге. \n\t'dir -d' - Показывает ВСЕ подкаталоги в текущем каталоге.");
+                        Console.WriteLine("\t'dir': \n\t'" +
+                            "dir' - Показывает ВСЕ файлы и подкаталоги в текущем каталоге. \n\t" +
+                            "'dir -a' - Показывает ВСЕ файлы и подкаталоги в текущем каталоге. \n\t" +
+                            "'dir -f' - Показывает ВСЕ файлы в текущем каталоге. \n\t" +
+                            "'dir -d' - Показывает ВСЕ подкаталоги в текущем каталоге.");
                         return new string[] { };
                     default:
                         throw new Exception("Нет таких аргументов. \ndir --help для справки.");
@@ -636,7 +645,9 @@ namespace MiniCmder
                 switch (parameter)
                 {
                     case "--help":
-                        Console.WriteLine("\t'cdrive': \n\t'cdrive <ИМЯ_ДИСКА>' - Изменяет текущий диск и путь на <ИМЯ_ДИСКА>:.\n\t'cdrive -list' - Выводит список всех дисков на компьютере.");
+                        Console.WriteLine("\t'cdrive': \n\t" +
+                            "'cdrive <ИМЯ_ДИСКА>' - Изменяет текущий диск и путь на <ИМЯ_ДИСКА>:.\n\t" +
+                            "'cdrive -list' - Выводит список всех дисков на компьютере.");
                         break;
                     case "-list":
                         Console.WriteLine(String.Join("\n", GetComputerDrives()));
@@ -711,7 +722,11 @@ namespace MiniCmder
                     switch (parameters[0])
                     {
                         case "--help":
-                            Console.WriteLine("\t'sc:' \n\t'sc <ПУТЬ>' - Открыть файл в <ПУТЬ>. \n\t'sc <ПУТЬ>' utf-8 - Открыть с кодировкой utf-8.\n\t'sc <ПУТЬ>' unicode - Открыть с кодировкой unicode.\n\t'sc <ПУТЬ>' ascii - Открыть с кодировкой ASCII.");
+                            Console.WriteLine("\t'sc:' \n\t" +
+                                "'sc <ПУТЬ>' - Открыть файл в <ПУТЬ>. \n\t" +
+                                "'sc <ПУТЬ>' utf-8 - Открыть с кодировкой utf-8.\n\t" +
+                                "'sc <ПУТЬ>' unicode - Открыть с кодировкой unicode.\n\t" +
+                                "'sc <ПУТЬ>' ascii - Открыть с кодировкой ASCII.");
                             break;
                         default:
                             string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
@@ -843,7 +858,11 @@ namespace MiniCmder
                     switch (parameters[0])
                     {
                         case "--help":
-                            Console.WriteLine("\t'newfile:' \n\t'newfile <ПУТЬ>.txt' - Создать файл .txt в <ПУТЬ>. \n\t'newfile <ПУТЬ>.txt' utf-8 - Создать файл .txt в <ПУТЬ> с кодировкой utf-8.\n\t'newfile <ПУТЬ>.txt' unicode - Создать файл .txt в <ПУТЬ> с кодировкой unicode.\n\t'newfile <ПУТЬ>.txt' ascii - Создать файл .txt в <ПУТЬ> с кодировкой ascii.");
+                            Console.WriteLine("\t'newfile:' \n\t" +
+                                "'newfile <ПУТЬ>.txt' - Создать файл .txt в <ПУТЬ>. \n\t" +
+                                "'newfile <ПУТЬ>.txt' utf-8 - Создать файл .txt в <ПУТЬ> с кодировкой utf-8.\n\t" +
+                                "'newfile <ПУТЬ>.txt' unicode - Создать файл .txt в <ПУТЬ> с кодировкой unicode.\n\t" +
+                                "'newfile <ПУТЬ>.txt' ascii - Создать файл .txt в <ПУТЬ> с кодировкой ascii.");
                             break;
                         default:
                             string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
