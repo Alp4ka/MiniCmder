@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-//if find regex "/a"
 namespace MiniCmder
 {
     /// <summary>
@@ -14,6 +13,9 @@ namespace MiniCmder
         private string currentDrive;
         private string userProfilePath, currentPath;
         public Concatenator Concat;
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
         public Manager()
         {
             Concat = new Concatenator();
@@ -26,6 +28,11 @@ namespace MiniCmder
             CurrentPath = String.Join(Path.DirectorySeparatorChar, PathToString(rootPathSplitted));
             userProfilePath = CurrentPath;
         }
+        /// <summary>
+        /// Метод для перевода массива строк в строку типа *путь*.
+        /// </summary>
+        /// <param name="pathSplitted"> Массива строк. </param>
+        /// <returns></returns>
         public string PathToString(string[] pathSplitted)
         {
             try
@@ -53,6 +60,9 @@ namespace MiniCmder
                 Console.WriteLine("Нельзя подняться выше.");
             }
         }*/
+        /// <summary>
+        /// Метод, отрисовывающий дерево, где верхние вершины - родительские директории для директорий на вершинах пониже(для текущего пути).
+        /// </summary>
         public void DrawGraph()
         {
             string[] splittedPath = StringToPath(CurrentPath);
@@ -87,6 +97,10 @@ namespace MiniCmder
                 }
             }
         }
+        /// <summary>
+        /// Получает на вход строку входных данных, пытается понять что нужно пользователю и передать сопутствующие аргументы.
+        /// </summary>
+        /// <param name="input"> Строка входных данных, считанных с консоли. </param>
         public void SetCommand(string input)
         {
             try
@@ -157,6 +171,10 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message);
             }
         }
+        /// <summary>
+        /// Двигает файл из пункта A в пункт Ж.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void Move(string[] parameters)
         {
             try
@@ -202,6 +220,10 @@ namespace MiniCmder
             }
             string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[1]));
         }
+        /// <summary>
+        /// Метод для работы с Concatenator.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void Concatenate(string[] parameters)
         {
             try
@@ -273,6 +295,10 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message + "\nconcat --help для справки. ");
             }
         }
+        /// <summary>
+        /// Создает директории.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void CreateDirectory(string[] parameters)
         {
             if (parameters.Length == 1)
@@ -306,6 +332,10 @@ namespace MiniCmder
                 }
             }
         }
+        /// <summary>
+        /// Копирует файл. ТОЛЬКО ЗАНОСИТ В БУФЕР.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void Copy(string[] parameters)
         {
             try
@@ -337,6 +367,10 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message + "\ncopy --help для справки. ");
             }
         }
+        /// <summary>
+        /// Вставляет скопированный файл.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void Paste(string[] parameters)
         {
             try
@@ -423,6 +457,11 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message + "\npaste --help для справки. ");
             }
         }
+        /// <summary>
+        /// Получить содержимое директории.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
+        /// <returns> Массив строк (имен файлов в выбранной директории). </returns>
         public string[] GetContaining(string[] parameters)
         {
             try
@@ -488,6 +527,10 @@ namespace MiniCmder
             }
 
         }
+        /// <summary>
+        /// Получить содержимое папки(по сути быдлокодерский метод здесь и нужно было перегрузить по-нормальному, чтобы был вывод/не было, но вышло как вышло).
+        /// </summary>
+        /// <returns> Массив строк (имен файлов в текущей директории). </returns>
         private string[] GetContaining()
         {
             try
@@ -507,10 +550,16 @@ namespace MiniCmder
                 return new string[] { };
             }
         }
+        /// <summary>
+        /// Очистка экрана.
+        /// </summary>
         public void ClearScreen()
         {
             Console.Clear();
         }
+        /// <summary>
+        /// Помощник по командам.
+        /// </summary>
         public void Help()
         {
             Console.WriteLine("\t'--help'\n\tСправка по командам.\n");
@@ -525,10 +574,14 @@ namespace MiniCmder
             Console.WriteLine("\t'concat'\n\tСмотреть concat --help для просмтра справки.\n");
             Console.WriteLine("\t'copy'\n\tcopy <ПУТЬ>.txt - копировать\n\tСмотреть copy --help для просмтра справки.\n");
             Console.WriteLine("\t'paste'\n\tpaste - вставить\n\tСмотреть paste --help для просмтра справки.\n");
-            Console.WriteLine("\t'move'\n\tmove <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ> - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.");
-            Console.WriteLine("\t'graph'\n\tgraph - Вывести дерево пути.");
+            Console.WriteLine("\t'move'\n\tmove <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ> - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.\n");
+            Console.WriteLine("\t'graph'\n\tgraph - Вывести дерево пути.\n");
             Console.WriteLine("\tНет возможности читать файлы и папки с пробельными символами.");
         }
+        /// <summary>
+        /// Метод, осуществляющий смену текущей директории.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void ChangeDirectory(string[] parameters)
         {
             try
@@ -547,17 +600,8 @@ namespace MiniCmder
                         Console.WriteLine($"\t'cd: \n\t'cd <ПУТЬ>' - Перейти в <ПУТЬ>.\n\t'cd {"<ПУТЬ>"}' - Перейти в директорию, если там есть пробельные символы.");
                         break;
                     default:
-                        //Console.WriteLine(CurrentPath);
                         string pathCheck = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]).Replace("\\", Path.DirectorySeparatorChar.ToString()));
-                        //Console.WriteLine(pathCheck);
                         CurrentPath = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]).Replace("\\", Path.DirectorySeparatorChar.ToString()));
-                        /*if (Directory.Exists(pathCheck))
-                        {
-                            CurrentPath = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0])).Replace("\\", "/");                     }
-                        else
-                        {
-                            throw new Exception($"{pathCheck} не является директорией.");
-                        }*/
                         break;
                 }
             }
@@ -572,6 +616,10 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message + "\ncd --help для справки.");
             }
         }
+        /// <summary>
+        /// Метод, позволяющий сменить диск.
+        /// </summary>
+        /// <param name="parameters"></param>
         public void ChangeDrive(string[] parameters)
         {
             try
@@ -612,6 +660,11 @@ namespace MiniCmder
             }
 
         }
+        /// <summary>
+        /// Проверка существования файла/директории.
+        /// </summary>
+        /// <param name="path"> string path, хранящий путь до файла/папки. </param>
+        /// <returns> true, если есть. fakse, если нет. </returns>
         private bool CheckIfExists(string path)
         {
             FileAttributes attr = File.GetAttributes(path);
@@ -620,6 +673,11 @@ namespace MiniCmder
             else
                 return File.Exists(path);
         }
+        /// <summary>
+        /// Метод для перевода строки в массив строк.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public string[] StringToPath(string path)
         {
             try
@@ -632,10 +690,18 @@ namespace MiniCmder
                 return (new string[] { });
             }
         }
+        /// <summary>
+        /// Получить список дисков компьютера.
+        /// </summary>
+        /// <returns> Массив строк(имен дисков) компьютера. </returns>
         public string[] GetComputerDrives()
         {
             return Environment.GetLogicalDrives().Select(i => i.Replace("\\", Path.DirectorySeparatorChar.ToString())).ToArray();
         }
+        /// <summary>
+        /// Посмотреть содержимое файла(в режиме просмотра). 
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void ShowFile(string[] parameters)
         {
             try
@@ -698,7 +764,10 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message + "\nsc --help для справки.");
             }
         }
-        //nuzhna zashita ot duraka
+        /// <summary>
+        /// Метод, осуществляющий удаление файла.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void DeleteFile(string[] parameters)
         {
             try
@@ -761,6 +830,10 @@ namespace MiniCmder
                 Console.WriteLine(ex.Message);
             }
         }
+        /// <summary>
+        /// Создание текстового файла.
+        /// </summary>
+        /// <param name="parameters"> Массив строк(параметров). </param>
         public void CreateFile(string[] parameters)
         {
             try

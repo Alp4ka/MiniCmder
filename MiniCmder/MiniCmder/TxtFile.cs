@@ -7,6 +7,9 @@ using System.Xml;
 
 namespace MiniCmder
 {
+    /// <summary>
+    /// По сути - просто класс обменник для Copy, Paste.
+    /// </summary>
     public static class TxtFile
     {
         public static string Name = null;

@@ -4,8 +4,17 @@ using System.Text;
 
 namespace MiniCmder
 {
+    /// <summary>
+    /// Класс редактора файлов.
+    /// </summary>
     public static class Editor
     {
+        /// <summary>
+        /// Метод, осуществляющий просмотр текстового файла.
+        /// </summary>
+        /// <param name="path"> Путь к файлу. </param>
+        /// <param name="encoding"> Кодировка. </param>
+        /// <param name="meta"> true - Мета инфа о файле выводится, false - нет. </param>
         public static void ShowContent(string path, Encoding encoding, bool meta = true)
         {
             if (meta)
@@ -23,6 +32,11 @@ namespace MiniCmder
             Dialog.WhileNot("Нажмите [y] чтобы выйти из режима просмотра.", 'y');
             
         }
+        /// <summary>
+        /// Метод, осуществляющий создание(запись) текстового файла.
+        /// </summary>
+        /// <param name="path"> Путь к файлу. </param>
+        /// <param name="encoding"> Кодировка файла. </param>
         public static void EditContent(string path, Encoding encoding)
         {
             Console.ForegroundColor = ConsoleColor.DarkMagenta;

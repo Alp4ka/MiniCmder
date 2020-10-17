@@ -2,8 +2,18 @@
 
 namespace MiniCmder
 {
+    /// <summary>
+    /// Класс для диалогов с пользователем.
+    /// </summary>
     public static class Dialog
     {
+        /// <summary>
+        /// Диалог типа Да-Нет
+        /// </summary>
+        /// <param name="question"> Вопрос в диалоге. </param>
+        /// <param name="keyYes"> Клавиша для 'Да'. </param>
+        /// <param name="keyNo"> Клавиша для 'Нет'. </param>
+        /// <returns></returns>
         public static bool YesNo(string question, char keyYes='y', char keyNo='n')
         {
             Console.WriteLine($"{question} \nНажмите [{keyYes}], чтобы да - [{keyNo}], чтобы нет:D");
@@ -22,8 +32,13 @@ namespace MiniCmder
                     return false;
                 }
             }
-            return true;
         }
+        /// <summary>
+        /// Диалог, в котором, пока не нажмешь на нужную кнопку, от тебя не отстанут.
+        /// </summary>
+        /// <param name="question"> Вопрос в диалоге. </param>
+        /// <param name="keyToPress"> Клавиша, которую нужно нажать. </param>
+        /// <returns></returns>
         public static bool WhileNot(string question, char keyToPress='y')
         {
             Console.WriteLine(question);
