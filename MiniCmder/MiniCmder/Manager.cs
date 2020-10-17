@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-
+//if find regex "/a"
 namespace MiniCmder
 {
     public class Manager
@@ -103,9 +103,12 @@ namespace MiniCmder
                         Paste(parameters);
                         break;
                     case "move":
+                        Move(parameters);
                         break;
                     case "concat":
                         Concatenate(parameters);
+                        break;
+                    case "graph":
                         break;
                     default:
                         throw new Exception("Не существует такой команды. \nhelp для справки");
@@ -116,6 +119,51 @@ namespace MiniCmder
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
             }
+        }
+        public void Move(string[] parameters)
+        {
+            try
+            {
+                if (parameters.Length == 1)
+                {
+                    switch (parameters[0])
+                    {
+                        case "--help":
+                            Console.WriteLine("\t'move': \n\t'move <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ>' - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.");
+                            break;
+                        default:
+                            break;
+                    }
+                    return;
+                }
+                else if(parameters.Length == 2)
+                {
+                    string pathToFile = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
+                    string pathTo = Path.GetFullPath(Path.Combine(CurrentPath, parameters[1]));
+                    if (!File.Exists(pathToFile))
+                    {
+                        throw new Exception($"Файл {pathToFile} не существует.");
+                    }
+                    if (!Directory.Exists(pathTo))
+                    {
+                        throw new Exception($"{pathTo} не существует 0_0.");
+                    }
+                    Console.WriteLine(pathToFile);
+                    Console.WriteLine(Path.GetFullPath(Path.Combine(pathTo, StringToPath(pathToFile)[StringToPath(pathToFile).Length - 1])));
+                    File.Move(pathToFile, Path.GetFullPath(Path.Combine(pathTo, StringToPath(pathToFile)[StringToPath(pathToFile).Length - 1])));
+                    Console.WriteLine();
+                }
+                else
+                {
+                    throw new Exception("Неверное количество аргументов.");
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message + "\nmove --help для справки.");
+            }
+            string path = Path.GetFullPath(Path.Combine(CurrentPath, parameters[1]));
         }
         public void Concatenate(string[] parameters)
         {
@@ -403,6 +451,7 @@ namespace MiniCmder
             Console.WriteLine("\t'concat'\n\tСмотреть concat --help для просмтра справки.\n");
             Console.WriteLine("\t'copy'\n\tcopy <ПУТЬ>.txt - копировать\n\tСмотреть copy --help для просмтра справки.\n");
             Console.WriteLine("\t'paste'\n\tpaste - вставить\n\tСмотреть paste --help для просмтра справки.\n");
+            Console.WriteLine("\t'move'\n\tmove <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ>' - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.");
             Console.WriteLine("\tНет возможности читать файлы и папки с пробельными символами.");
         }
         public void ChangeDirectory(string[] parameters)
