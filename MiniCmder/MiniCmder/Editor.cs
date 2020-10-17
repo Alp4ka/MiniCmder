@@ -31,13 +31,13 @@ namespace MiniCmder
             string metaInf = $"{fileInfo.Name} \t {fileInfo.Extension} \t {fileInfo.CreationTimeUtc} \t {fileInfo.Length} bytes";
             Console.WriteLine(metaInf);
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("[CTRL] [ENTER], чтобы завершить написание файла. ");
+            Console.WriteLine("[ESCAPE], чтобы завершить написание файла. ");
             string input = "";
             Console.ForegroundColor = ConsoleColor.White;
             while (true)
             {
                 symbol = Console.ReadKey(true);
-                if (symbol.Modifiers.HasFlag(ConsoleModifiers.Control))
+                if (symbol.Key == ConsoleKey.Escape)
                 {
                     break;
                 }

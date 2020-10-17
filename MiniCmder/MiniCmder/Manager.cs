@@ -6,6 +6,9 @@ using System.Text;
 //if find regex "/a"
 namespace MiniCmder
 {
+    /// <summary>
+    /// Класс, описывающий основные методы файлового менеджера.
+    /// </summary>
     public class Manager
     {
         private string currentDrive;
@@ -18,16 +21,16 @@ namespace MiniCmder
             Console.WriteLine("Macrohard Шиндовс [Версия 228.1337]");
             Console.WriteLine("(c) Корпорация шизов(ШУЕ ППШ), 2020. Все права под надежной охраной санитаров.\n");
             Console.ForegroundColor = ConsoleColor.White;
-            string[] rootPathSplitted = this.StringToPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-            CurrentDrive = rootPathSplitted[0];
-            CurrentPath = String.Join("\\", PathToString(rootPathSplitted));
-            this.userProfilePath = CurrentPath;
+            string[] rootPathSplitted = StringToPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+            CurrentDrive = rootPathSplitted[0] + Path.DirectorySeparatorChar;
+            CurrentPath = String.Join(Path.DirectorySeparatorChar, PathToString(rootPathSplitted));
+            userProfilePath = CurrentPath;
         }
         public string PathToString(string[] pathSplitted)
         {
             try
             {
-                return String.Join("\\", pathSplitted);
+                return String.Join(Path.DirectorySeparatorChar, pathSplitted);
             }
             catch (Exception ex)
             {
@@ -35,27 +38,28 @@ namespace MiniCmder
                 return "";
             }
         }
-        public void ToUp()
+        /*public void ToUp()
         {
             if (CurrentPath != CurrentDrive + "\\")
             {
-                /*string pathWoLast = PathToString(StringToPath(CurrentPath).Where((i,j) => 
+                string pathWoLast = PathToString(StringToPath(CurrentPath).Where((i,j) => 
                 j!= StringToPath(CurrentPath).Length-1).ToArray());
-                CurrentPath = pathWoLast;*/
+                CurrentPath = pathWoLast;
+
                 CurrentPath = Directory.GetParent(Path.GetFullPath(Path.Combine(CurrentPath, "..\\"))).FullName;
             }
             else
             {
                 Console.WriteLine("Нельзя подняться выше.");
             }
-        }
+        }*/
         public void DrawGraph()
         {
             string[] splittedPath = StringToPath(CurrentPath);
             Console.ForegroundColor = ConsoleColor.Yellow;
             for (int i = 0; i < splittedPath.Length; ++i)
             {
-                if(i == splittedPath.Length-1)
+                if (i == splittedPath.Length - 1)
                 {
                     string[] dirContain = GetContaining();
                     Console.Write(new String(new char[i * 2]).Replace("\0", " "));
@@ -64,7 +68,7 @@ namespace MiniCmder
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     for (int j = 0; j < dirContain.Length; ++j)
                     {
-                        Console.Write(new String(new char[(i+1) * 2]).Replace("\0", " "));
+                        Console.Write(new String(new char[(i + 1) * 2]).Replace("\0", " "));
                         Console.Write("|_");
                         Console.WriteLine(dirContain[j]);
                     }
@@ -94,16 +98,11 @@ namespace MiniCmder
                 string[] inputSplitted = input.Split();
                 string command = inputSplitted[0];
                 string[] parameters = inputSplitted.Where((i, j) => j != 0).ToArray();
+                string[] pathIfSpaceSplit = input.Split('"'); 
                 switch (command)
                 {
-                    case "../":
-                        ToUp();
-                        break;
                     case "dir":
                         GetContaining(parameters);
-                        break;
-                    case "..\\":
-                        ToUp();
                         break;
                     case "cls":
                         ClearScreen();
@@ -115,7 +114,11 @@ namespace MiniCmder
                         Help();
                         break;
                     case "cd":
-                        ChangeDirectory(parameters);
+                        if (pathIfSpaceSplit.Length >= 2)
+                        {
+                            parameters[0] = pathIfSpaceSplit[1];
+                        }
+                        ChangeDirectory(new string[] { parameters[0] });
                         break;
                     case "mkdir":
                         CreateDirectory(parameters);
@@ -208,7 +211,7 @@ namespace MiniCmder
                     switch (parameters[0])
                     {
                         case "--help":
-                            Console.WriteLine("\t'concat': \n\t'concat add <ПУТЬ>.txt' - Складывает текстовую информацию из файла <ПУТЬ>.txt к предыдущим значениям concat \n\t'concat show' - Выводит текущее значение concat. \n\t'concat clear' - Очищает concat.");
+                            Console.WriteLine("\t'concat': \n\t'concat add <ПУТЬ>.txt' - Складывает текстовую информацию из файла <ПУТЬ>.txt к предыдущим значениям concat \n\t'concat show' - Выводит текущее значение concat. \n\t'concat clear' - Очищает concat. \n\t'concat save' - Сохраняет в текущем пути файл с результатом concat.");
                             break;
                         case "clear":
                             Concat.SetNull();
@@ -237,6 +240,22 @@ namespace MiniCmder
                             else
                             {
                                 throw new Exception($"Файл {path} не существует.");
+                            }
+                            break;
+                        case "save":
+                            string pathToSave = Path.Combine(CurrentPath, parameters[1]);
+                            if (File.Exists(pathToSave))
+                            {
+                                throw new Exception("Файл с таким именем уже существует.");
+                            }
+                            else
+                            {
+                                if (pathToSave[(pathToSave.Length - 4)..].ToString().ToLower() != ".txt")
+                                {
+                                    throw new Exception("Укажите расширение .txt после имени файла.");
+                                }
+                                File.WriteAllText(pathToSave, Concat.ToString());
+                                Console.WriteLine($"Файл {pathToSave} сохранен.");
                             }
                             break;
                         default:
@@ -498,7 +517,6 @@ namespace MiniCmder
             Console.WriteLine("\t'dir'\n\tПоказать файлы в текущем каталоге. Смотреть dir --help для справки.\n");
             Console.WriteLine("\t'cls'\n\tОчистить экран.\n");
             Console.WriteLine("\t'cdrive'\n\tСмена диска.Смотреть cdrive --help для просмтра справки.\n");
-            Console.WriteLine("\t'../' или '..\\'\n\tПерейти на каталог выше.\n");
             Console.WriteLine("\t'cd <ПУТЬ>'\n\tПерейти в <ПУТЬ>. Смотреть cd --help для просмтра справки.\n");
             Console.WriteLine("\t'mdkir <ИМЯ_НОВОГО_КАТАЛОГА>'\n\tСоздать каталог <ИМЯ_НОВОГО_КАТАЛОГА>. Смотреть mkdir --help для просмтра справки.\n");
             Console.WriteLine("\t'rfile <ПУТЬ_К_ФАЙЛУ>'\n\tУдалить файл в <ПУТЬ_К_ФАЙЛУ>. Смотреть rfile --help для просмтра справки.\n");
@@ -517,7 +535,7 @@ namespace MiniCmder
             {
                 if (parameters.Length == 1)
                 {
-                    parameters[0] = parameters[0].Replace("/", "\\");
+                    //parameters[0] = parameters[0].Replace("/", "\\");
                 }
                 else
                 {
@@ -526,18 +544,20 @@ namespace MiniCmder
                 switch (parameters[0])
                 {
                     case "--help":
-                        Console.WriteLine("\t'cd: \n\t'cd <ПУТЬ>' - Перейти в <ПУТЬ>.");
+                        Console.WriteLine($"\t'cd: \n\t'cd <ПУТЬ>' - Перейти в <ПУТЬ>.\n\t'cd {"<ПУТЬ>"}' - Перейти в директорию, если там есть пробельные символы.");
                         break;
                     default:
-                        string pathCheck = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
-                        if (Directory.Exists(pathCheck))
+                        //Console.WriteLine(CurrentPath);
+                        string pathCheck = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]).Replace("\\", Path.DirectorySeparatorChar.ToString()));
+                        //Console.WriteLine(pathCheck);
+                        CurrentPath = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]).Replace("\\", Path.DirectorySeparatorChar.ToString()));
+                        /*if (Directory.Exists(pathCheck))
                         {
-                            CurrentPath = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0]));
-                        }
+                            CurrentPath = Path.GetFullPath(Path.Combine(CurrentPath, parameters[0])).Replace("\\", "/");                     }
                         else
                         {
                             throw new Exception($"{pathCheck} не является директорией.");
-                        }
+                        }*/
                         break;
                 }
             }
@@ -604,7 +624,7 @@ namespace MiniCmder
         {
             try
             {
-                return path.Split("\\");
+                return path.Split(Path.DirectorySeparatorChar.ToString());
             }
             catch
             {
@@ -614,7 +634,7 @@ namespace MiniCmder
         }
         public string[] GetComputerDrives()
         {
-            return Environment.GetLogicalDrives().Select(i => i.Replace("\\", "")).ToArray();
+            return Environment.GetLogicalDrives().Select(i => i.Replace("\\", Path.DirectorySeparatorChar.ToString())).ToArray();
         }
         public void ShowFile(string[] parameters)
         {
@@ -832,13 +852,21 @@ namespace MiniCmder
             }
             set
             {
-                if (GetComputerDrives().Contains(value))
+                try
                 {
-                    this.currentDrive = value;
+                    if (GetComputerDrives().Contains(value))
+                    {
+                        this.currentDrive = value;
+                    }
+                    else
+                    {
+                        throw new Exception($"Нет диска с именем {value}");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    throw new Exception("Нет такого диска");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
@@ -850,21 +878,34 @@ namespace MiniCmder
             }
             set
             {
-                if (CheckIfExists(value))
+                try
                 {
-                    if (StringToPath(value)[0] != CurrentDrive)
+
+
+                    if (Directory.Exists(value))
                     {
-                        throw new Exception("Путь не найден");
+                        this.currentPath = value.Replace("\\", Path.DirectorySeparatorChar.ToString());
+
+                        /*
+                        if (StringToPath(value)[0] != CurrentDrive)
+                        {
+                            throw new Exception("Путь не найден");
+                        }
+                        else
+                        {
+                            this.currentPath = value;
+                        }*/
+
                     }
                     else
                     {
-                        this.currentPath = value;
+                        throw new Exception("Путь не найден");
                     }
-
                 }
-                else
+                catch (Exception ex)
                 {
-                    throw new Exception("Путь не найден");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
                 }
             }
         }

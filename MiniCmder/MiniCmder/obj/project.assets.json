@@ -8,21 +8,17 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\kisam\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\kisam\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\kisam\\Desktop\\MiniCmder\\MiniCmder\\MiniCmder\\MiniCmder.csproj",
+      "projectUniqueName": "C:\\Users\\kisam\\OneDrive\\Рабочий стол\\MiniCmder\\MiniCmder\\MiniCmder\\MiniCmder.csproj",
       "projectName": "MiniCmder",
-      "projectPath": "C:\\Users\\kisam\\Desktop\\MiniCmder\\MiniCmder\\MiniCmder\\MiniCmder.csproj",
+      "projectPath": "C:\\Users\\kisam\\OneDrive\\Рабочий стол\\MiniCmder\\MiniCmder\\MiniCmder\\MiniCmder.csproj",
       "packagesPath": "C:\\Users\\kisam\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\kisam\\Desktop\\MiniCmder\\MiniCmder\\MiniCmder\\obj\\",
+      "outputPath": "C:\\Users\\kisam\\OneDrive\\Рабочий стол\\MiniCmder\\MiniCmder\\MiniCmder\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
         "C:\\Users\\kisam\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -48,10 +44,21 @@
     "frameworks": {
       "netcoreapp3.1": {
         "imports": [
-          "net461"
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
         ],
         "assetTargetFallback": true,
-        "warn": true
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
       }
     }
   }
