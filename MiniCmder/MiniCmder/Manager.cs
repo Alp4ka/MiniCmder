@@ -45,21 +45,6 @@ namespace MiniCmder
                 return "";
             }
         }
-        /*public void ToUp()
-        {
-            if (CurrentPath != CurrentDrive + "\\")
-            {
-                string pathWoLast = PathToString(StringToPath(CurrentPath).Where((i,j) => 
-                j!= StringToPath(CurrentPath).Length-1).ToArray());
-                CurrentPath = pathWoLast;
-
-                CurrentPath = Directory.GetParent(Path.GetFullPath(Path.Combine(CurrentPath, "..\\"))).FullName;
-            }
-            else
-            {
-                Console.WriteLine("Нельзя подняться выше.");
-            }
-        }*/
         /// <summary>
         /// Метод, отрисовывающий дерево, где верхние вершины - родительские директории для директорий на вершинах пониже(для текущего пути).
         /// </summary>

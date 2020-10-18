@@ -14,11 +14,12 @@ namespace MiniCmder
         /// <param name="keyYes"> Клавиша для 'Да'. </param>
         /// <param name="keyNo"> Клавиша для 'Нет'. </param>
         /// <returns></returns>
-        public static bool YesNo(string question, char keyYes='y', char keyNo='n')
+        public static bool YesNo(string question, char keyYes = 'y', char keyNo = 'n')
         {
             Console.WriteLine($"{question} \nНажмите [{keyYes}], чтобы да - [{keyNo}], чтобы нет:D");
             char choice = '\0';
-            while(true){
+            while (true)
+            {
                 choice = Console.ReadKey().KeyChar.ToString().ToLower()[0];
                 Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                 Console.Write("   ");
@@ -27,7 +28,7 @@ namespace MiniCmder
                 {
                     return true;
                 }
-                else if(choice == keyNo)
+                else if (choice == keyNo)
                 {
                     return false;
                 }
@@ -39,7 +40,7 @@ namespace MiniCmder
         /// <param name="question"> Вопрос в диалоге. </param>
         /// <param name="keyToPress"> Клавиша, которую нужно нажать. </param>
         /// <returns></returns>
-        public static bool WhileNot(string question, char keyToPress='y')
+        public static bool WhileNot(string question, char keyToPress = 'y')
         {
             Console.WriteLine(question);
             char choice = '\0';
@@ -57,5 +58,5 @@ namespace MiniCmder
             return true;
         }
     }
-    
+
 }

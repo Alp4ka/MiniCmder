@@ -30,7 +30,7 @@ namespace MiniCmder
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine(new String(new char[Console.WindowWidth]).Replace("\0", "_"));
             Dialog.WhileNot("Нажмите [y] чтобы выйти из режима просмотра.", 'y');
-            
+
         }
         /// <summary>
         /// Метод, осуществляющий создание(запись) текстового файла.
@@ -55,7 +55,7 @@ namespace MiniCmder
                 {
                     break;
                 }
-                else if(symbol.KeyChar == '\b')
+                else if (symbol.KeyChar == '\b')
                 {
                     if (Console.CursorLeft > 0)
                     {
@@ -65,7 +65,7 @@ namespace MiniCmder
                         input = input[0..(input.Length - 1)];
                     }
                 }
-                else if(symbol.KeyChar == (char)13)
+                else if (symbol.KeyChar == (char)13)
                 {
                     Console.Write("\n");
                     input += "\n";
@@ -88,8 +88,8 @@ namespace MiniCmder
             {
                 return;
             }
-            
-            
+
+
         }
     }
 }
