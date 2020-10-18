@@ -14,6 +14,11 @@ namespace MiniCmder
     {
         public static string Name = null;
         public static string Content = null;
+        /// <summary>
+        /// Генерирует имя для файла, чтобы избежать повторений имен.
+        /// </summary>
+        /// <param name="path"> Путь, где должен быть файл. </param>
+        /// <returns> string - сгенерированное имя файла. </returns>
         public static string GenerateName(string path)
         {
             string name = Name;

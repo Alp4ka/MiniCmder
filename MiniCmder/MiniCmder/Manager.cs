@@ -238,7 +238,7 @@ namespace MiniCmder
                                 "concat add <ПУТЬ>.txt' - Складывает текстовую информацию из файла <ПУТЬ>.txt к предыдущим значениям concat \n\t'" +
                                 "concat show' - Выводит текущее значение concat. \n\t'" +
                                 "concat clear' - Очищает concat. \n\t'" +
-                                "concat save' - Сохраняет в текущем пути файл с результатом concat.");
+                                "concat save <ИМЯ>.txt' - Сохраняет в текущем пути файл <ИМЯ>.txt с результатом concat.");
                             break;
                         case "clear":
                             Concat.SetNull();
@@ -977,17 +977,6 @@ namespace MiniCmder
                     if (Directory.Exists(value))
                     {
                         this.currentPath = value.Replace("\\", Path.DirectorySeparatorChar.ToString());
-
-                        /*
-                        if (StringToPath(value)[0] != CurrentDrive)
-                        {
-                            throw new Exception("Путь не найден");
-                        }
-                        else
-                        {
-                            this.currentPath = value;
-                        }*/
-
                     }
                     else
                     {

@@ -4,6 +4,10 @@ namespace MiniCmder
 {
     class Program
     {
+        /// <summary>
+        /// Основной цикл.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             Manager manager = new Manager();
