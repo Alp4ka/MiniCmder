@@ -67,6 +67,7 @@ namespace MiniCmder
         {
             string[] splittedPath = StringToPath(CurrentPath);
             Console.ForegroundColor = ConsoleColor.Yellow;
+            // В цикле проходимся по папкам на пути к текущей и выводим их ЯРКА ЖОЛТiМ ЦВЕТАМ.
             for (int i = 0; i < splittedPath.Length; ++i)
             {
                 if (i == splittedPath.Length - 1)
@@ -76,6 +77,7 @@ namespace MiniCmder
                     Console.Write("|_");
                     Console.WriteLine(splittedPath[i]);
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    // Выводим список файлов и подкаталогов в текущем подкаталоге ТЕМНА ЖОЛТIМ ЦВЕТАМ.
                     for (int j = 0; j < dirContain.Length; ++j)
                     {
                         Console.Write(new String(new char[(i + 1) * 2]).Replace("\0", " "));
@@ -112,7 +114,7 @@ namespace MiniCmder
                 string[] inputSplitted = input.Split();
                 string command = inputSplitted[0];
                 string[] parameters = inputSplitted.Where((i, j) => j != 0).ToArray();
-                string[] pathIfSpaceSplit = input.Split('"'); 
+                string[] pathIfSpaceSplit = input.Split('"');
                 switch (command)
                 {
                     case "dir":
