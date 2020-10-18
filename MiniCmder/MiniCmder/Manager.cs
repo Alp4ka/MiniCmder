@@ -569,10 +569,10 @@ namespace MiniCmder
             Console.WriteLine("\t'newfile <ПУТЬ>.txt'\n\tnewfile <ПУТЬ>.txt - Создать .txt файл в <ПУТЬ>. Смотреть newfile --help для просмтра справки.\n");
             Console.WriteLine("\t'concat'\n\tСмотреть concat --help для просмтра справки.\n");
             Console.WriteLine("\t'copy'\n\tcopy <ПУТЬ>.txt - копировать\n\tСмотреть copy --help для просмтра справки.\n");
-            Console.WriteLine("\t'paste'\n\tpaste - вставить\n\tСмотреть paste --help для просмтра справки.\n");
-            Console.WriteLine("\t'move'\n\tmove <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ> - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>.\n");
+            Console.WriteLine("\t'paste'\n\tpaste - вставить\n\tСмотреть paste --help для просмотра справки.\n");
+            Console.WriteLine("\t'move'\n\tmove <ПУТЬ_К_ФАЙЛУ>.txt <ПУТЬ_КУДА_КОПИРОВАТЬ> - перемещает файл <ПУТЬ_К_ФАЙЛУ>.txt в <ПУТЬ_КУДА_КОПИРОВАТЬ>. Смотреть move --help для справки.\n");
             Console.WriteLine("\t'graph'\n\tgraph - Вывести дерево пути.\n");
-            Console.WriteLine("\tНет возможности читать файлы и папки с пробельными символами.");
+            Console.WriteLine($"\tЧтобы перейти в папку с пробельными символами, напишите ее название в кавычках. Папка должна существовать и находиться в текущей директории. Например cd {"Рабочий стол"}");
         }
         /// <summary>
         /// Метод, осуществляющий смену текущей директории.
